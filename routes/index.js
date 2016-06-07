@@ -5,6 +5,8 @@ var http = require('http');
 
 var app = express();
 
+var User = require('../database/db').user;//获取mongodb中的users集合
+
 var c_user = '';
 //创建用户信息哈希map表
 var userMap = {};
@@ -44,29 +46,46 @@ router.get('/login', function(req, res, next) {
   });
 });
 
-router.get('/login', function(req, res, next) {
-  var name = req.body['username'];
-  console.log('login ===' + name);
-  var psd = userMap[name];
-  //用户名是否存在
-  if (psd) {
-    //用户名存在，校验密码
-    if (psd == req.body['password']) {
-      //密码正确,跳转到首页
-      //当前用户名
-      req.session.c_user = name;
-      return res.redirect('/');
-    } else {
-      //密码错误，提示密码错误，重新输入
-      alert('用户名或密码错误');
+router.post('/login', function(req, res, next) {
 
+  var name = req.body['username'];
+  var psd = req.body['password'];
+
+  User.fetch(function(err,docs){
+    if(!err){
+      if(docs){
+        console.log(docs);
+      }else{
+        console.log('用户名或密码错误')
+      }
+    }else{
+      console.log(err);
     }
 
-  } else {
-    //用户名不存在，提示请先注册
-    alert('该用户名还未注册，请先注册')
+  });
 
-  }
+  // var name = req.body['username'];
+  // console.log('login ===' + name);
+  // var psd = userMap[name];
+  // //用户名是否存在
+  // if (psd) {
+  //   //用户名存在，校验密码
+  //   if (psd == req.body['password']) {
+  //     //密码正确,跳转到首页
+  //     //当前用户名
+  //     req.session.c_user = name;
+  //     return res.redirect('/');
+  //   } else {
+  //     //密码错误，提示密码错误，重新输入
+  //     alert('用户名或密码错误');
+  //
+  //   }
+  //
+  // } else {
+  //   //用户名不存在，提示请先注册
+  //   alert('该用户名还未注册，请先注册')
+  //
+  // }
 });
 
 //注册
