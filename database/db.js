@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;//创建模型
 //定义用户模型及字段和类型
 var userSchema = new Schema({
   name : String,
-  name : String
+  password : String
 });
 
 userSchema.statics = {
@@ -16,9 +16,21 @@ userSchema.statics = {
     .exec(cb);
   },
   //根据用户名和密码查找
-  findUser: function(userName, userPassword, cb){
+  checkUser: function(userName, userPassword, cb){
     return this
     .find({name: userName, password: userPassword})
+    .exec(cb);
+  },
+  //根据name查找对应用户
+  findByName: function(userName, cb){
+    return this
+    .find({name: userName})
+    .exec(cb);
+  },
+  //插入新用户，用户名和密码
+  saveUser: function(userName, userPassword, cb){
+    return this
+    .save({name: userName, password: userPassword})
     .exec(cb);
   }
 };

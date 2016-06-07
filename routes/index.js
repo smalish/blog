@@ -33,16 +33,26 @@ router.get('/login', function(req, res, next) {
 
 router.post('/login', function(req, res, next) {
 
-  var name = req.body['username'];
-  var psd = req.body['password'];
-
-  User.findUser(name, psd, function(err,docs){
+  var name = req.body.name;
+  var psd = req.body.password;
+  //验证用户名和密码是否正确
+  User.checkUser(name, psd, function(err,docs){
     if(!err){
       if(docs){
         console.log(docs);
         console.log('登陆成功');
+        res.send({
+          code:'0',
+          msg:'登录成功'
+        });
+        //res.redirect('/userBlog/' + docs[0].id);
       }else{
         console.log('用户名或密码错误')
+
+        res.send({
+          code:'1',
+          msg:'用户名或密码错误'
+        });
       }
     }else{
       console.log(err);
@@ -86,34 +96,66 @@ router.get('/reg', function(req, res, next) {
 
 router.post('/reg', function(req, res) {
 
-  if (req.body['password-repeat'] != req.body['password']) {
+  var userName = req.body['username'];
+  var psw = req.body['password'];
+  var rePsw = req.body['password-repeat'];
+
+  if (psw != rePsw) {
     res.send('error', '两次输入的口令不一致');
     return res.redirect('/reg');
   }
 
-  var name = req.body['username'];
-  var psw = req.body['password'];
-
   //检查用户名是否已经存在
-  if (userMap[name]) {
-    //用户名已存在
-    alert('该用户已注册，请登录');
-  } else {
-    //用户名不存在
-    userMap[name] = psw;
-    req.session.userMap = userMap;
-    console.log('注册成功');
-    return res.redirect('/');
-  }
+    User.findByName(userName, function(err, docs){
+      if(!err){
+        if(docs.length > 0){
+          console.log('该用户已注册，请登录');
+
+        }else{
+          console.log('是新用户');
+          //新建一个用户文档
+          var c_user = new User({
+            "name":userName,
+            "password":psw
+          });
+          //保存注册用户信息到数据库
+          c_user.save(function(err, docs){
+            if(!err){
+              if(docs){
+                console.log(docs);
+                console.log('注册成功，请登录');
+              }
+            }else{
+              console.log(err);
+            }
+          });
+
+        }
+      }else{
+        console.log(err);
+      }
+    });
+
+
+  // if (isUserExist(userName)) {
+  //   //用户名已存在
+  //   alert('该用户已注册，请登录');
+  // } else {
+  //   //用户名不存在
+  //   userMap[name] = psw;
+  //   req.session.userMap = userMap;
+  //   console.log('注册成功');
+  //   return res.redirect('/');
+  // }
 
 });
 
 //我的博客页面
-router.get('/userBlog/:username', function(req, res, next) {
-
+router.get('/userBlog/:id', function(req, res, next) {
+  //通过id查询用户的所有博客
   res.render('userBlog', {
     title: '我的博客',
-    username: '',
+    username: req.params.id,
     layout: 'layout'
   });
 });
