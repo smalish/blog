@@ -7,25 +7,10 @@ var app = express();
 
 var User = require('../database/db').user;//获取mongodb中的users集合
 
-var c_user = '';
-//创建用户信息哈希map表
-var userMap = {};
 /* GET home page. */
-//主页
+//主页------------------------------------------------------------------------
 router.get('/', function(req, res, next) {
 
-  // http.get("http://mapimxk.dangdang.com/index.php?action=dd_shop_info&dd_shop_id=20118&user_client=android&client_version=6.1.2&timestamp=1459923199&udid=692e5229d6b3a01288b1d7a5dd5edbdb&app_id=lottery&result_format=1&time_code=3989db5e42fd16cd330772a5c39c35c9", function(res) {
-  //   console.log("Got response: " + res.statusCode);
-  //   res.on('data', function(data) {
-  //     console.log("Got data: " + data);
-  //   });
-  // }).on('error', function(e) {
-  //   console.log("Got error: " + e.message);
-  // });
-
-
-  //保存至session
-  // req.session.userMap = userMap;
 
   res.render('index', {
     c_user: req.session.c_user == undefined ? '': req.session.c_user, //当前用户名
@@ -37,7 +22,7 @@ router.get('/', function(req, res, next) {
 
 });
 
-//登录
+//登录------------------------------------------------------------------------
 router.get('/login', function(req, res, next) {
   res.render('login', {
     title: '登录',
@@ -51,10 +36,11 @@ router.post('/login', function(req, res, next) {
   var name = req.body['username'];
   var psd = req.body['password'];
 
-  User.fetch(function(err,docs){
+  User.findUser(name, psd, function(err,docs){
     if(!err){
       if(docs){
         console.log(docs);
+        console.log('登陆成功');
       }else{
         console.log('用户名或密码错误')
       }
@@ -88,7 +74,7 @@ router.post('/login', function(req, res, next) {
   // }
 });
 
-//注册
+//注册-------------------------------------------------------------------------
 router.get('/reg', function(req, res, next) {
 
   res.render('reg', {
@@ -122,6 +108,15 @@ router.post('/reg', function(req, res) {
 
 });
 
+//我的博客页面
+router.get('/userBlog/:username', function(req, res, next) {
+
+  res.render('userBlog', {
+    title: '我的博客',
+    username: '',
+    layout: 'layout'
+  });
+});
 
 
 

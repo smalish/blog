@@ -14,6 +14,12 @@ userSchema.statics = {
     .find()
     .sort()
     .exec(cb);
+  },
+  //根据用户名和密码查找
+  findUser: function(userName, userPassword, cb){
+    return this
+    .find({name: userName, password: userPassword})
+    .exec(cb);
   }
 };
 
