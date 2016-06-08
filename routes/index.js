@@ -5,7 +5,8 @@ var http = require('http');
 
 var app = express();
 
-var User = require('../database/db').user;//获取mongodb中的users集合
+var User = require('../database/users').user;//获取mongodb中的users集合
+var Blog = require('../database/blogs').blog;//获取mongodb中的blogs集合
 
 /* GET home page. */
 //主页------------------------------------------------------------------------
@@ -43,9 +44,12 @@ router.post('/login', function(req, res, next) {
         console.log('登陆成功');
         res.send({
           code:'0',
-          msg:'登录成功'
+          msg:'登录成功',
+          data:{
+            name: 'yangying'//docs[0].name
+          }
         });
-        //res.redirect('/userBlog/' + docs[0].id);
+        //res.redirect('/userBlog/' + docs[0].name);
       }else{
         console.log('用户名或密码错误')
 
@@ -151,13 +155,32 @@ router.post('/reg', function(req, res) {
 });
 
 //我的博客页面
-router.get('/userBlog/:id', function(req, res, next) {
-  //通过id查询用户的所有博客
-  res.render('userBlog', {
-    title: '我的博客',
-    username: req.params.id,
-    layout: 'layout'
+router.get('/userBlog/:name', function(req, res, next) {
+
+  // //用户姓名
+  var t_name = req.params.name;
+
+  //通过name查询用户的所有博客
+  Blog.findByName(t_name, function(err, docs){
+    if(!err){
+      if(docs.length > 0){
+        //将查找的blog渲染到页面
+        res.render('userBlog', {
+          title: '我的博客',
+          username: t_name,
+          myblogs: docs,
+          layout: 'layout'
+        });
+      }else{
+        console.log('未查找到blog')
+      }
+    }else{
+      console.log(err);
+    }
   });
+
+
+
 });
 
 

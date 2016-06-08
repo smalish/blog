@@ -20,6 +20,13 @@ $(function(){
           dataType:'json',
           success:function(result){
             console.log('result === ' + result);
+            if(result.code == '0'){
+              //跳转到我的主页
+              window.location = 'http://baidu.com';
+            }else{
+              alert('接口调用失败');
+            }
+
           },
           error:function(xhr, errorType, error){
             console.log(error);
