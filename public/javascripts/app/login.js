@@ -25,7 +25,7 @@ $(function(){
               //跳转到我的主页
               window.location.href = '/userBlog/' + result.data.name;
             }else{
-              alert('接口调用失败');
+              alert(result.msg);
             }
 
           },

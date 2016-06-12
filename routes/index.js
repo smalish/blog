@@ -39,18 +39,18 @@ router.post('/login', function(req, res, next) {
   //验证用户名和密码是否正确
   User.checkUser(name, psd, function(err,docs){
     if(!err){
-      if(docs){
+      if(docs.length > 0){
         console.log(docs);
         console.log('登陆成功');
         res.send({
           code:'0',
           msg:'登录成功',
           data:{
-            name: 'yangying'//docs[0].name
+            name: docs[0].name
           }
         });
         res.end();//如果不执行end()，则前端一直等待response状态
-        //res.redirect('/userBlog/' + docs[0].name);
+
       }else{
         console.log('用户名或密码错误')
 
@@ -120,17 +120,6 @@ router.post('/reg', function(req, res) {
       }
     });
 
-
-  // if (isUserExist(userName)) {
-  //   //用户名已存在
-  //   alert('该用户已注册，请登录');
-  // } else {
-  //   //用户名不存在
-  //   userMap[name] = psw;
-  //   req.session.userMap = userMap;
-  //   console.log('注册成功');
-  //   return res.redirect('/');
-  // }
 
 });
 
