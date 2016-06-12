@@ -49,6 +49,7 @@ router.post('/login', function(req, res, next) {
             name: 'yangying'//docs[0].name
           }
         });
+        res.end();//如果不执行end()，则前端一直等待response状态
         //res.redirect('/userBlog/' + docs[0].name);
       }else{
         console.log('用户名或密码错误')
@@ -57,6 +58,7 @@ router.post('/login', function(req, res, next) {
           code:'1',
           msg:'用户名或密码错误'
         });
+        res.end();
       }
     }else{
       console.log(err);
@@ -64,28 +66,6 @@ router.post('/login', function(req, res, next) {
 
   });
 
-  // var name = req.body['username'];
-  // console.log('login ===' + name);
-  // var psd = userMap[name];
-  // //用户名是否存在
-  // if (psd) {
-  //   //用户名存在，校验密码
-  //   if (psd == req.body['password']) {
-  //     //密码正确,跳转到首页
-  //     //当前用户名
-  //     req.session.c_user = name;
-  //     return res.redirect('/');
-  //   } else {
-  //     //密码错误，提示密码错误，重新输入
-  //     alert('用户名或密码错误');
-  //
-  //   }
-  //
-  // } else {
-  //   //用户名不存在，提示请先注册
-  //   alert('该用户名还未注册，请先注册')
-  //
-  // }
 });
 
 //注册-------------------------------------------------------------------------

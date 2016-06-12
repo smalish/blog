@@ -7,6 +7,7 @@ $(function(){
     },
     bindEvent:function(){
       $('.loginSubmit').on('click', function(){
+
         //传入参数
         var param = {
           name:$('#username')[0].value,
@@ -22,7 +23,7 @@ $(function(){
             console.log('result === ' + result);
             if(result.code == '0'){
               //跳转到我的主页
-              window.location = 'http://baidu.com';
+              window.location.href = '/userBlog/' + result.data.name;
             }else{
               alert('接口调用失败');
             }
