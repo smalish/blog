@@ -1,0 +1,23 @@
+
+<h4><span class="j_blog_user"><%= username %></span>的主页</h4>
+<!-- 显示用户博客列表开始 -->
+<ul class="j_blogs_ul">
+<% for(var i = 0; i < myblogs.length; i++){
+  %>
+  <li>
+    <p><%= i %></p>
+    <h5><%= myblogs[i].blogTitle %></h5>
+    <p><%= myblogs[i].blogContent %></p>
+  </li>
+<%
+} %>
+
+</ul>
+<!-- 显示用户博客结束 -->
+
+发表博客：<br />
+<div>标题：<input type="text" class="j_blog_title"></div>
+<div>正文：<textarea class="j_blog_content"></textarea></div>
+<button class="j_submit_blog">发表</button>
+
+<script src="/javascripts/app/userBlog.js"></script>
