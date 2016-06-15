@@ -123,7 +123,8 @@ router.post('/reg', function(req, res) {
 
 });
 
-//我的博客页面
+//我的博客页面-----------------------------------------------------------
+
 router.get('/userBlog/:name', function(req, res, next) {
 
   // //用户姓名
@@ -148,7 +149,39 @@ router.get('/userBlog/:name', function(req, res, next) {
     }
   });
 
+  router.post('/userBlog/saveBlog', function(req, res, next){
+    //获取ajax传入信息
+    var userName = req.body.userName;
+    var title = req.body.blogTitle;
+    var content = req.body.blogContent;
+    //新建Blog对象
+    var myblog = new Blog({
+      name : userName,
+      blogTitle : title,
+      blogContent : content
+    });
+    //保存到数据库
+    myblog.save(function(err, docs){
+      if(!err){
+        if(docs){
+          console.log(docs);
+          res.send({
+            code:'0',
+            msg:'发表博客成功'
+          });
+          res.end();
+        }
+      }else{
+        console.log(err);
+        res.send({
+          code:'1',
+          msg:'发表博客失败'
+        });
+        res.end();
+      }
+    });
 
+  });
 
 });
 
