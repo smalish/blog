@@ -12,10 +12,17 @@ var Blog = require('../database/blogs').blog;//获取mongodb中的blogs集合
 //主页------------------------------------------------------------------------
 router.get('/', function(req, res, next) {
 
+  if(!req.session.user_id){
+
+    console.log('未登录');
+    // res.redirect('/login');
+  }else{
+    console.log('已登陆');
+  }
+  console.log(req.session.user_id);
 
   res.render('index', {
-    c_user: req.session.c_user == undefined ? '': req.session.c_user, //当前用户名
-    userMap: req.session.userMap, //已注册用户
+    c_user: req.session.user_id == undefined ? '': req.session.user_id, //当前用户名
     title: '主页',
     layout: 'layout'
   });
@@ -27,7 +34,7 @@ router.get('/', function(req, res, next) {
 router.get('/login', function(req, res, next) {
   res.render('login', {
     title: '登录',
-    c_user: req.session.c_user == undefined ? '': req.session.c_user, //当前用户名
+    c_user: req.session.user_id == undefined ? '': req.session.user_id, //当前用户名
     layout: 'layout'
   });
 });
@@ -42,6 +49,8 @@ router.post('/login', function(req, res, next) {
       if(docs.length > 0){
         console.log(docs);
         console.log('登陆成功');
+        //用户名存入session
+        req.session.user_id = docs[0].name;
         res.send({
           code:'0',
           msg:'登录成功',
@@ -67,13 +76,20 @@ router.post('/login', function(req, res, next) {
   });
 
 });
+//注销-------------------------------------------------------------------------
+router.get('/logout', function(req, res, next){
+  //删除用户session
+  delete req.session.user_id;
+  //重定向到主页
+  res.redirect('/');
+});
 
 //注册-------------------------------------------------------------------------
 router.get('/reg', function(req, res, next) {
 
   res.render('reg', {
     title: '注册',
-    userMap: req.session.userMap, //注册用户map
+    c_user: req.session.user_id == undefined ? '': req.session.user_id, //当前用户名
     layout: 'layout'
   });
 });
@@ -82,7 +98,7 @@ router.post('/reg', function(req, res) {
 
   var userName = req.body['username'];
   var psw = req.body['password'];
-  var rePsw = req.body['password-repeat'];
+  var rePsw = req.body['password_repeat'];
 
   if (psw != rePsw) {
     res.send('error', '两次输入的口令不一致');
@@ -94,6 +110,11 @@ router.post('/reg', function(req, res) {
       if(!err){
         if(docs.length > 0){
           console.log('该用户已注册，请登录');
+          res.send({
+            code : '1',
+            msg : '该用户已注册，请登录'
+          });
+          res.end();
 
         }else{
           console.log('是新用户');
@@ -108,9 +129,19 @@ router.post('/reg', function(req, res) {
               if(docs){
                 console.log(docs);
                 console.log('注册成功，请登录');
+                res.send({
+                  code : '0',
+                  msg : '注册成功，请登录'
+                });
+                res.end();
               }
             }else{
               console.log(err);
+              res.send({
+                code : '2',
+                msg : '注册失败，请重试'
+              });
+              res.end();
             }
           });
 
@@ -125,10 +156,18 @@ router.post('/reg', function(req, res) {
 
 //我的博客页面-----------------------------------------------------------
 
-router.get('/userBlog/:name', function(req, res, next) {
+router.get('/userBlog', function(req, res, next) {
 
   // //用户姓名
-  var t_name = req.params.name;
+  var t_name = req.session.user_id;
+  if(t_name == undefined){
+    res.render('notLogin', {
+      title: '未登录',
+      c_user: req.session.user_id == undefined ? '': req.session.user_id, //当前用户名
+      layout: 'layout'
+    });
+    return ;
+  }
 
   //通过name查询用户的所有博客
   Blog.findByName(t_name, function(err, docs){
@@ -137,6 +176,7 @@ router.get('/userBlog/:name', function(req, res, next) {
         //将查找的blog渲染到页面
         res.render('userBlog', {
           title: '我的博客',
+          c_user: req.session.user_id == undefined ? '': req.session.user_id, //当前用户名
           username: t_name,
           myblogs: docs,
           layout: 'layout'

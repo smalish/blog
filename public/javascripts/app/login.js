@@ -22,8 +22,9 @@ $(function(){
           success:function(result){
             console.log('result === ' + result);
             if(result.code == '0'){
+              
               //跳转到我的主页
-              window.location.href = '/userBlog/' + result.data.name;
+              window.location.href = '/userBlog';// + result.data.name;
             }else{
               alert(result.msg);
             }
