@@ -12,7 +12,7 @@ $(function(){
         var param = {
           name:$('#username')[0].value,
           password:$('#password')[0].value
-        }
+        };
         //ajax调用登录接口
         $.ajax({
           url:'/login',
@@ -22,7 +22,6 @@ $(function(){
           success:function(result){
             console.log('result === ' + result);
             if(result.code == '0'){
-              
               //跳转到我的主页
               window.location.href = '/userBlog';// + result.data.name;
             }else{

@@ -1,5 +1,5 @@
 $(function(){
-  //登录
+  //注册
   var reg = {
     init: function(){
       //绑定事件
@@ -22,7 +22,7 @@ $(function(){
               case '0': {
                 //注册成功，请登录
                 alert(result.msg);
-                
+
               }break;
               case '1': {
                 //用户已注册，请登录
@@ -32,7 +32,7 @@ $(function(){
                 //注册失败，请重试
                 alert(result.msg);
               }break;
-              default:;
+
             }
 
           },
