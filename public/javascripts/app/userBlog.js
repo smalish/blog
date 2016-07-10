@@ -1,5 +1,5 @@
 $(function(){
-  //登录
+  //我的博客
   var UserBlog = {
     init: function(){
       //绑定事件
@@ -31,17 +31,17 @@ $(function(){
               $('.j_blog_title')[0].value = '';
               $('.j_blog_content')[0].value = '';
             }else{
-              alert('发表博客失败，请重试')
+              alert('发表博客失败，请重试');
             }
           },
           error: function(e){
             alert(e.message);
           }
-        })
+        });
       });
     }
   };
 
-  //注册
+
   UserBlog.init();
 });
