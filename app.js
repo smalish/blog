@@ -2,16 +2,13 @@ var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
-var bodyParser = require('body-parser');
-//session
 var cookieParser = require('cookie-parser');
-var session = require('express-session');
-var MongoStore = require('connect-mongo')(session);
+var bodyParser = require('body-parser');
 var partials = require('express-partials');
-
+var session = require('express-session');
 
 var routes = require('./routes/index');
-//var users = require('./routes/users');
+var users = require('./routes/users');
 
 var app = express();
 
@@ -30,37 +27,17 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 app.use(session({
   secret: '12345',
-  name: 'name',//这里的name值是cookie的name，cookie的name值默认是connect.sid
-  cookie: {maxAge: 600000},//设置maxAge为60000ms,表示cookie和session失效的时间为10min
+  name: 'name',
+  cookie: {maxAge: 60000},
   resave: false,
   saveUninitialized: true,
-  store: new MongoStore({   //创建新的mongodb数据库
-          host: 'localhost',    //数据库的地址，本机的话就是127.0.0.1，也可以是网络主机
-          port: 27017,          //数据库的端口号
-          //db: 'blog',      //数据库的名称。
-          url: 'mongodb://localhost/blog'//db这个属性报错
-    })
 }));
-
-
 app.use(express.static(path.join(__dirname, 'public')));
 
 
 
 app.use('/', routes);
-// app.use('/', function(req, res, next){
-//
-//   if(!req.session.user_id){
-//
-//     console.log('未登录');
-//     res.redirect('/login');
-//   }else{
-//     console.log('已登陆');
-//   }
-//   console.log(req.session.user_id);
-//
-// })
-
+app.use('/users', users);
 app.listen('3000');
 console.log('blog start on 3000');
 
