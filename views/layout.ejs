@@ -26,31 +26,20 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="/">Blog</a>
+        <a class="navbar-brand" href="#">Blog</a>
       </div>
 
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-
         <ul class="nav navbar-nav">
-          <li class="active"><a href="/userBlog">我的主页 <span class="sr-only">(current)</span></a></li>
-
-        </ul>
-
-        <ul class="nav navbar-nav pull-right" id="userStatus">
-          
-          <% if(c_user == ''){ %>
-            <li><span><a href="/reg">注册</a>&nbsp;|&nbsp;<a href="/login">登录</a></span></li>
-          <% }else{ %>
-            <li><span><a href="/reg">欢迎<%= c_user %>回来</a>&nbsp;|&nbsp;<a href="/logout">注销</a></span></li>
-          <% } %>
-
+          <li class="active"><a href="/">主页 <span class="sr-only">(current)</span></a></li>
+          <li><a href="/reg">注册</a></li>
+          <li><a href="#">登录</a></li>
 
         </ul>
 
       </div>
       <!-- /.navbar-collapse -->
-
     </div>
     <!-- /.container-fluid -->
   </nav>
